@@ -1,9 +1,12 @@
-name: On-Chain Monitor
+name: On-Chain Monitor & Sync
 
 on:
   schedule:
-    - cron: '0 * * * *' # Läuft jede Stunde automatisch
-  workflow_dispatch: # Ermöglicht den manuellen Start über den Actions-Tab
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write # Erlaubt dem Skript, Änderungen in das Repo zu schreiben
 
 jobs:
   run-script:
@@ -24,3 +27,10 @@ jobs:
         env:
           ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
         run: python monitor.py
+
+      - name: Commit and Push changes if data updated
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add onchain_data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update onchain data [skip ci]" && git push)
