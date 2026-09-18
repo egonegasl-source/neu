@@ -1,18 +1,16 @@
 import os
-import time
+import json
+from datetime import datetime
 import requests
 
-# Etherscan API-Key sicher aus den GitHub Secrets holen
 API_KEY = os.environ.get("ETHERSCAN_API_KEY")
-
-# Beispiel-Wallet (z.B. eine bekannte Whale- oder CEX-Adresse zum Testen)
-TARGET_ADDRESS = "0x28C6c06298d514Db089934071355E5743bf21d60" # Binance Hot Wallet als Beispiel
+TARGET_ADDRESS = "0x28C6c06298d514Db089934071355E5743bf21d60" # Binance Hot Wallet als Referenz
 ETHERSCAN_URL = "https://api.etherscan.io/api"
 
-def check_wallet():
+def fetch_onchain_data():
     if not API_KEY:
         print("Fehler: ETHERSCAN_API_KEY Secret nicht gefunden!")
-        return
+        return None
 
     params = {
         "module": "account",
@@ -29,15 +27,29 @@ def check_wallet():
         if data["status"] == "1":
             wei_balance = int(data["result"])
             eth_balance = wei_balance / 10**18
-            print(f"[SUCCESS] Aktueller ETH-Kontostand für {TARGET_ADDRESS}: {eth_balance:.4f} ETH")
+            
+            result_data = {
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "address": TARGET_ADDRESS,
+                "eth_balance": eth_balance,
+                "status": "success"
+            }
+            return result_data
         else:
             print(f"[API ERROR] {data['message']}: {data['result']}")
+            return None
             
     except Exception as e:
         print(f"[CONNECTION ERROR] {e}")
+        return None
 
 if __name__ == "__main__":
     print("Starte On-Chain Abfrage...")
-    check_wallet()
-    # Einhaltung der Free-Tier Grenzen (max 3 Requests/Sekunde)
-    time.sleep(1)
+    data = fetch_onchain_data()
+    
+    if data:
+        # Daten in JSON-Datei schreiben
+        filename = "onchain_data.json"
+        with open(filename, "w") as f:
+            json.dump(data, f, indent=4)
+        print(f"Daten erfolgreich in {filename} gespeichert.")
