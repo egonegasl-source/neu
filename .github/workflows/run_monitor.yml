@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,9 +28,9 @@ jobs:
           ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
         run: python monitor.py
 
-      - name: Commit and Push changes if data updated
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add onchain_data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update onchain data [skip ci]" && git push origin HEAD:main)
+      - name: Push updated onchain data
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          file_pattern: 'onchain_data.json'
