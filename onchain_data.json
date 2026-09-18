@@ -1,0 +1,12 @@
+{
+    "timestamp": "2026-09-18T12:47:11.142025Z",
+    "address": "0x2000c8296d514080934071355743bf21d60",
+    "eth_balance": 0.0,
+    "eth_price_usd": 2501.99,
+    "total_usd": 0.0,
+    "delta_eth": 0.0,
+    "delta_usd": 0.0,
+    "alert": false,
+    "alert_message": "",
+    "status": "success"
+}
