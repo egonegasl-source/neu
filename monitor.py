@@ -8,7 +8,7 @@ API_KEY = os.getenv("ETHERSCAN_API_KEY")
 TARGET_ADDRESS = "0x2000c8296d514080934071355743bf21d60"  # Binance Hot Wallet
 ETHERSCAN_URL = "https://api.etherscan.io/v2/api"
 
-# Schwellenwerte für Alarme (Beispielwerte: ab 100 ETH oder ca. 300.000 USD Bewegung)
+# Schwellenwerte für Alarme
 THRESHOLD_ETH = 100.0
 THRESHOLD_USD = 300000.0
 
@@ -69,7 +69,6 @@ def fetch_onchain_balance():
 if __name__ == "__main__":
   print("Starte erweiterte On-Chain & Markt-Abfrage...")
 
-  # 1. Aktuelle On-Chain Daten & Marktpreis holen
   current_balance = fetch_onchain_balance()
   if current_balance is None:
     exit(1)
@@ -77,7 +76,6 @@ if __name__ == "__main__":
   eth_price = fetch_eth_price()
   current_usd = current_balance * eth_price
 
-  # 2. Alten Stand laden für Delta-Berechnung
   previous_data = load_previous_data()
   previous_balance = (
       previous_data.get("eth_balance", current_balance)
@@ -85,11 +83,9 @@ if __name__ == "__main__":
       else current_balance
   )
 
-  # 3. Differenz berechnen (Delta)
   delta_eth = current_balance - previous_balance
   delta_usd = delta_eth * eth_price
 
-  # 4. Schwellenwert-Prüfung (Alarm-Logik)
   alert_triggered = False
   alert_message = ""
 
@@ -107,7 +103,6 @@ if __name__ == "__main__":
         f" (~{delta_usd:,.2f} USD)"
     )
 
-  # 5. Strukturierte Daten für die JSON-Speicherung aufbereiten
   result_data = {
       "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
       "address": TARGET_ADDRESS,
@@ -125,4 +120,3 @@ if __name__ == "__main__":
   with open(filename, "w") as f:
     json.dump(result_data, f, indent=4)
   print(f"Erweiterte Daten erfolgreich in {filename} gespeichert.")
-    print(f"Daten erfolgreich in {filename} gespeichert.")
