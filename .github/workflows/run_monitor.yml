@@ -1,0 +1,26 @@
+name: On-Chain Monitor
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Läuft jede Stunde automatisch
+  workflow_dispatch: # Ermöglicht den manuellen Start über den Actions-Tab
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Monitor Script
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        run: python monitor.py
