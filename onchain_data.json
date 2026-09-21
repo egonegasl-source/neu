@@ -1,6 +1,6 @@
 {
-    "timestamp": "2026-09-20T23:52:54.143599Z",
-    "eth_price_usd": 2642.92,
+    "timestamp": "2026-09-21T00:12:24.843747Z",
+    "eth_price_usd": 2654.25,
     "global_alert": false,
     "wallets": {
         "Binance Hot Wallet": {
@@ -15,7 +15,7 @@
         "Coinbase Hot Wallet": {
             "address": "0x71660c4005ba85c37ccec55d0c4493e66fe775d3",
             "eth_balance": 11.083348634293612,
-            "total_usd": 29292.403772547274,
+            "total_usd": 29417.97811257382,
             "delta_eth": 0.0,
             "delta_usd": 0.0,
             "alert": false,
